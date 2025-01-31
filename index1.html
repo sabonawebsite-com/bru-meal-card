@@ -1,0 +1,227 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Digital Meal-card</title>  
+    <style>    
+body {  
+    font-family: Arial, sans-serif;  
+    margin: 0;  
+    padding: 0;  
+    background-color: #f4f4f9;  
+}  
+.logo{
+    align-items: center;
+}
+h2 {  
+    color: #333;  
+}   
+.search-term, .students {  
+    max-width: 800px;  
+    margin: 20px auto;  
+    padding: 20px;  
+    border-radius: 8px;  
+    background-color: #ffffff;  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  
+}  
+.label {  
+    display: block;  
+    margin-bottom: 8px;  
+    font-weight: bold;  
+}    
+input[type="text"],  
+input[type="number"] {  
+    width: calc(100% - 20px);  
+    padding: 10px;  
+    margin-bottom: 15px;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+    font-size: 16px;  
+}  
+input[type="text"]:focus,  
+input[type="number"]:focus {  
+    border-color: #f310fb;  
+    outline: none; 
+    font-size: 28px; 
+}   
+button {  
+    background-color: green; 
+    color: white;  
+    border: none;  
+    border-radius: 4px;  
+    padding: 10px 15px;  
+    cursor: pointer;  
+    font-size: 16px;  
+    transition: background-color 0.3s ease;  
+}  
+button:hover {  
+    background-color: #0056b3;  
+}   
+.image_container {  
+    display: grid;  
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  
+    gap: 10px;  
+}  
+.actionimages {  
+    width: 100%;  
+    height: auto;  
+    border-radius: 4px;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+}  
+.checkbox-container{
+    background: linear-gradient(267deg, #0521f5, #f10271, rgb(86, 8, 243));
+    font-size: 28px;
+    color: white;
+}
+#search{
+    font-size: 28px;
+    color: hsl(346, 94%, 49%);
+}
+#timer {  
+    font-size: 2em;  
+    padding: 20px;  
+    border: 2px solid #4a90e2;  
+    border-radius: 10px;  
+    background-color: hwb(201 2% 1%);  
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  
+    transition: all 0.3s ease;  
+    color: white;
+}  
+#timer:hover {  
+    background-color: #0f0f10;  
+    transform: scale(1.05);
+    color: white;  
+}  
+.expired {  
+    color: #e74c3c; 
+    font-weight: bold;  
+}
+@media (max-width: 600px) {  
+    .search-term, .students {  
+        padding: 10px;  
+    }  
+
+    button {  
+        width: 100%;  
+        margin-top: 10px;  
+    }  
+}
+    </style>  
+</head>  
+<body>  
+    <div class="search-term">  
+        <img class="logo" src="/static/BRU.png" alt="Brand Logo"> 
+        <h2>Digital Meal-card</h2> 
+        <h1 id="timer"></h1> 
+        <label for="search">Search by ID:</label>  
+        <input class="seeTerm" type="text" id="search" placeholder="Enter Your ID..." oninput="filterCheckboxes()">  
+        <div class="checkbox-container" id="checkboxContainer"></div>  
+        <button onclick="saveChanges()">Save Changes</button>  
+    </div>  
+    <div class="students">  
+        <div class="container">  
+            <div class="searchbox_container">  
+                <div class="searchbox">  
+                    <label for="studentID">ID Search:</label>  
+                    <input class="search" type="text" id="search" placeholder="ID">  
+                </div>  
+            </div>  
+            <div class="image_container">  
+                <img src="/static/680.png" alt="Sabona Marara" class="actionimages">  
+                <img src="/static/498.png" alt="Gadisaa Abaraa" class="actionimages">
+                <img src="/static/481.png" alt="Etafaa Tarikuu" class="actionimages">
+                <img src="/static/503.png" alt="Gadise Qalbesaa" class="actionimages">  
+                <img src="/static/2.png" alt="Gadise Qalbesaa" class="actionimages"> 
+                <img src="/static/675.png" alt="Rataa shibashii" class="actionimages"> 
+                <img src="/static/423.png" alt="Barudin Shariif" class="actionimages"> 
+                <img src="/static/741.png" alt="Yared" class="actionimages"> 
+                <img src="/static/711.png" alt="Suraafel Imiruu" class="actionimages"> 
+                <img src="/static/673.png" alt="Ramadan Abdulkarim" class="actionimages"> 
+                <img src="/static/387.png" alt="Abduubaa Boruu" class="actionimages"> 
+                <img src="/static/629.png" alt="Malkamuu Nugusee" class="actionimages"> 
+                <img src="/static/733.png" alt="Usman Badhsa" class="actionimages"> 
+                <img src="/static/746.png" alt="Yordanos Malasee" class="actionimages"> 
+                <img src="/static/470.png" alt="Duressa Warisoo" class="actionimages"> 
+            </div>  
+        </div>  
+    </div>
+    <script>  
+        const checkboxes = [];  
+        function loadCheckboxes() {  
+            fetch('/load_checkboxes')  
+                .then(response => response.json())  
+                .then(data => {  
+                    for (let i = 0; i < 1500; i++) {  
+                        checkboxes[i] = data[i] || 0;  
+                        createCheckbox(i);  
+                    }  
+                });  
+        }  
+        function createCheckbox(index) {  
+            const container = document.getElementById('checkboxContainer');  
+            const checkbox = document.createElement('div');  
+            checkbox.className = 'checkbox';  
+            checkbox.innerHTML = `<label><input type="checkbox" ${checkboxes[index] ? 'checked' : ''} onchange="updateCheckbox(${index}, this.checked)"> BRU/R/2014[ ${index + 1} ]</label>`;  
+            container.appendChild(checkbox);  
+        }  
+        function updateCheckbox(index, checked) {  
+            checkboxes[index] = checked ? 1 : 0;  
+        }  
+        function filterCheckboxes() {  
+            const searchTerm = document.getElementById('search').value.toLowerCase();  
+            const container = document.getElementById('checkboxContainer');  
+            container.innerHTML = '';  
+            for (let i = 0; i < 1500; i++) {  
+                if (`BRU/R/2014/${i + 1}`.toLowerCase().includes(searchTerm)) {  
+                    createCheckbox(i);  
+                }  
+            }  
+        }  
+        function saveChanges() {  
+            fetch('/save_checkboxes', {  
+                method: 'POST',  
+                headers: {  
+                    'Content-Type': 'application/json'  
+                },  
+                body: JSON.stringify(checkboxes)  
+            })  
+            .then(response => response.json())  
+            .then(data => alert(data.message));  
+        }  
+        window.onload = loadCheckboxes;  
+        let input=document.querySelector('.search');
+        let images=document.querySelectorAll('.image_container > img');
+        input.addEventListener('keydown',function(){
+            for(let i=0; i<images.length;i++)
+          {
+                if(new RegExp(this.value).test(images[i].src))
+              {      
+                images[i].style.display ='block'
+              }
+              else
+              {
+                images[i].style.display ='none'
+              }
+              console.log(images[i].src)
+          }
+        }) 
+         var countDownDate = new Date("Jan 31, 2025 22:10:59").getTime();  
+         var x = setInterval(function() {   
+             var now = new Date().getTime();  
+             var distance = countDownDate - now;    
+             var days = Math.floor(distance / (1000 * 60 * 60 * 24));  
+             var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));  
+             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));  
+             var seconds = Math.floor((distance % (1000 * 60)) / 1000);  
+             document.getElementById("timer").innerHTML = days + "d: " + hours + "h: "  
+             + minutes + "m: " + seconds + "s ";   
+             if (distance < 0) {  
+                 clearInterval(x);  
+                 document.getElementById("timer").innerHTML = "ClOSED";  
+                 document.getElementById("timer").classList.add("expired");  
+             }  
+         }, 1000); 
+    </script>  
+</body>  
+</html>
